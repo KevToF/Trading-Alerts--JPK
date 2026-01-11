@@ -1,1 +1,1 @@
-# Trading-Alerts--JPK
+# trading-alerts
