@@ -13,12 +13,12 @@ importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-comp
 // ============================================================================
 // ⚠️ IMPORTANTE: Reemplaza estos valores con los de tu proyecto Firebase
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_PROJECT_ID.firebaseapp.com",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_PROJECT_ID.appspot.com",
-  messagingSenderId: "TU_SENDER_ID",
-  appId: "TU_APP_ID"
+  apiKey: "AIzaSyDlGenNadBAzwN3h0pcUSxHBQ0hKUJkblg",
+  authDomain: "trading-alerts-60e31.firebaseapp.com",
+  projectId: "trading-alerts-60e31",
+  storageBucket: "trading-alerts-60e31.firebasestorage.app",
+  messagingSenderId: "745729577482",
+  appId: "1:745729577482:web:b762f60b57cba6a4ce85f3"
 };
 
 // Inicializar Firebase
