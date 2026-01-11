@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -256,6 +257,10 @@
 
     // VAPID Key (clave pública de Cloud Messaging)
     const VAPID_KEY = "BEAPn7_dkCl3MWuPANKvyZUy1cXOxLr-VfHOBRcGz6ZmRzajbeWqxMegmd06VosBYs5RFi7V6_fBopnDAXgFqCU";
+    
+    // URL de tu Google Apps Script Web App
+    // Debes publicar tu Apps Script como Web App y pegar la URL aquí
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzwu-rzpX17zd0cEN4xEFNDXTt2NKSNjsB06H-Ye6jqt8VJV2S8ZYo3MHYm8NQv42ny/exec";
 
     // ============================================================================
     // INICIALIZACIÓN
@@ -436,26 +441,38 @@
     // ============================================================================
     async function subscribeToTopic(token) {
       try {
-        // Necesitamos el Server Key de Firebase
-        // Como no podemos exponerlo aquí, usamos un proxy
-        // El backend de Apps Script debe manejar la suscripción
-        
         console.log('📡 Suscribiendo al topic "trading_alerts"...');
         
-        // Opción 1: Llamar a tu backend de Apps Script
-        // const response = await fetch('TU_WEB_APP_URL', {
-        //   method: 'POST',
-        //   body: JSON.stringify({ action: 'subscribe', token })
-        // });
-
-        // Opción 2: Suscripción directa (requiere Server Key)
-        // Por seguridad, esto debería hacerse en el backend
+        // Validar que tenemos la URL de Apps Script
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "TU_WEB_APP_URL") {
+          console.warn('⚠️ APPS_SCRIPT_URL no configurada. La suscripción no funcionará.');
+          console.warn('Por favor, publica tu Apps Script como Web App y configura la URL.');
+          return;
+        }
         
-        console.log('✅ Suscrito al topic "trading_alerts"');
+        // Llamar al backend de Apps Script para suscribir el token
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: 'subscribeFCM',
+            token: token
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          console.log('✅ Suscrito al topic "trading_alerts"');
+        } else {
+          console.error('⚠️ Error suscribiendo:', result.error);
+        }
         
       } catch (error) {
         console.error('⚠️ Error suscribiendo al topic:', error);
-        // No lanzamos error porque el token ya funciona
+        // No lanzamos error porque el token ya funciona para notificaciones directas
       }
     }
 
