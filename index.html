@@ -448,35 +448,48 @@ async function registerTokenInAppsScript(token) {
   try {
     console.log('📡 Registrando token en Apps Script...');
     
-    // Validar que tenemos la URL de Apps Script
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "TU_WEB_APP_URL") {
       console.warn('⚠️ APPS_SCRIPT_URL no configurada.');
       return;
     }
+    
+    console.log('📤 Enviando a:', APPS_SCRIPT_URL);
+    
+    const payload = {
+      action: 'registerFCM',
+      token: token,
+      userAgent: navigator.userAgent
+    };
     
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      mode: 'cors',
-      body: JSON.stringify({
-        action: 'registerFCM',
-        token: token,
-        userAgent: navigator.userAgent
-      })
+      // 👆 SIN mode: 'cors'
+      body: JSON.stringify(payload)
     });
     
+    console.log('📥 Response status:', response.status);
+    console.log('📥 Response headers:', [...response.headers.entries()]);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
     const result = await response.json();
+    console.log('✅ Resultado:', result);
     
     if (result.success) {
-      console.log(`✅ Token registrado en Apps Script (${result.total_tokens} tokens total)`);
+      console.log(`✅ Token registrado (${result.total_tokens} tokens total)`);
     } else {
-      console.error('⚠️ Error registrando token:', result.error);
+      console.error('⚠️ Error:', result.error);
+      showError(result.error);
     }
     
   } catch (error) {
-    console.error('⚠️ Error conectando con Apps Script:', error);
+    console.error('❌ Error completo:', error);
+    showError(`Conexión fallida: ${error.message}`);
   }
 }
 
