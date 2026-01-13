@@ -409,7 +409,7 @@
 
         // 5. Suscribirse al topic "trading_alerts"
         updateStatus('⏳ Suscribiendo al topic...', 'loading');
-        await subscribeToTopic(token);
+        await registerTokenInAppsScript(token);
 
         // 6. Guardar token
         localStorage.setItem('fcm_token', token);
@@ -441,42 +441,44 @@
     // ============================================================================
     // SUSCRIBIRSE AL TOPIC
     // ============================================================================
-    async function subscribeToTopic(token) {
-      try {
-        console.log('📡 Suscribiendo al topic "trading_alerts"...');
-        
-        // Validar que tenemos la URL de Apps Script
-        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "TU_WEB_APP_URL") {
-          console.warn('⚠️ APPS_SCRIPT_URL no configurada. La suscripción no funcionará.');
-          console.warn('Por favor, publica tu Apps Script como Web App y configura la URL.');
-          return;
-        }
-        
-        // Llamar al backend de Apps Script para suscribir el token
-        const response = await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            action: 'subscribeFCM',
-            token: token
-          })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          console.log('✅ Suscrito al topic "trading_alerts"');
-        } else {
-          console.error('⚠️ Error suscribiendo:', result.error);
-        }
-        
-      } catch (error) {
-        console.error('⚠️ Error suscribiendo al topic:', error);
-        // No lanzamos error porque el token ya funciona para notificaciones directas
-      }
+// ============================================================================
+// REGISTRAR TOKEN EN APPS SCRIPT
+// ============================================================================
+async function registerTokenInAppsScript(token) {
+  try {
+    console.log('📡 Registrando token en Apps Script...');
+    
+    // Validar que tenemos la URL de Apps Script
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "TU_WEB_APP_URL") {
+      console.warn('⚠️ APPS_SCRIPT_URL no configurada.');
+      return;
     }
+    
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      mode: 'cors',
+      body: JSON.stringify({
+        action: 'registerFCM',
+        token: token,
+        userAgent: navigator.userAgent
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      console.log(`✅ Token registrado en Apps Script (${result.total_tokens} tokens total)`);
+    } else {
+      console.error('⚠️ Error registrando token:', result.error);
+    }
+    
+  } catch (error) {
+    console.error('⚠️ Error conectando con Apps Script:', error);
+  }
+}
 
     // ============================================================================
     // ENVIAR NOTIFICACIÓN DE PRUEBA
