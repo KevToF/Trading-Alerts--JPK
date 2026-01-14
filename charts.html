@@ -125,11 +125,12 @@
     .chart-card {
       background: rgba(255, 255, 255, 0.05);
       border-radius: 15px;
-      padding: 25px; /* Aumentado el padding */
+      padding: 25px;
       margin-bottom: 30px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      width: 100%; /* Asegurar que use todo el ancho */
+      width: 100%;
+      min-height: 750px; /* AGREGAR ESTA LÍNEA */
     }
 
     .chart-header {
@@ -158,7 +159,7 @@
     /* TRADINGVIEW WIDGETS - MÁS ALTURA Y ANCHO */
     .tradingview-widget-container {
       width: 100%;
-      height: 700px; /* Aumentado de 600px a 700px */
+      height: 750px; /* Aumentado de 600px a 700px */
       border-radius: 10px;
       overflow: hidden;
     }
@@ -180,7 +181,11 @@
 
     @media (min-width: 1200px) {
       .tradingview-widget-container {
-        height: 800px; /* Aún más altura en pantallas grandes */
+        height: 850px; /* CAMBIAR DE 800px A 1000px */
+      }
+      
+      .chart-card {
+        min-height: 900px; /* AGREGAR ESTA LÍNEA */
       }
     }
 
@@ -299,7 +304,7 @@
     function createChart(containerId, symbol) {
       new TradingView.widget({
         "width": "100%",
-        "height": "100%",
+        "height": "750", // CAMBIAR DE "100%" A "850"
         "symbol": symbol,
         "interval": "5",
         "timezone": "America/Bogota",
